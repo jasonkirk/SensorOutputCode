@@ -74,16 +74,16 @@ void loop() {
   
   float h = dht.readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
+  float ct = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
+  float ft = dht.readTemperature(true);
 
   
 
   String outputString = "/getInfoPage/index.php?deviceName=";
   outputString = outputString + deviceName;
   outputString = outputString + "&sensorName=tempSensor&sensorReading=";
-  outputString = outputString + f;
+  outputString = outputString + ft;
 
   // wait for WiFi connection
     if((WiFiMulti.run() == WL_CONNECTED)) {
