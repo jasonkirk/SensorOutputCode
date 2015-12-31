@@ -26,7 +26,10 @@
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
 DHT dht(DHTPIN, DHTTYPE);
 
-
+  String dataServer = "10.0.100.100";
+  String deviceName = "GarageSensorUnit";  
+  float tempPrev;
+  float humPrev;
 
 
 
@@ -43,6 +46,10 @@ DHT dht(DHTPIN, DHTTYPE);
 ESP8266WiFiMulti WiFiMulti;
 
 void setup() {
+
+  String dataServer = "10.0.100.100";
+  String deviceName = "GarageSensorUnit"; 
+  
   dht.begin();
 
 
@@ -60,16 +67,14 @@ void setup() {
         delay(1000);
     }
 
-    WiFiMulti.addAP("ssid", "password");
+    WiFiMulti.addAP("FoS", "JoshpickteethfinE");
 
 }
 
 void loop() {
 
-  
-  String dataServer = "10.0.100.100";
-  String deviceName = "GarageSensorUnit";  
-  
+delay(5000); // Wait 5 seconds   
+
   
   
   float h = dht.readHumidity();
@@ -86,34 +91,92 @@ void loop() {
   outputString = outputString + ft;
 
   // wait for WiFi connection
-    if((WiFiMulti.run() == WL_CONNECTED)) {
-
-        HTTPClient http;
-
-        USE_SERIAL.print("[HTTP] begin...\n");
-        // configure traged server and url
-        //http.begin("192.168.1.12", 443, "/test.html", true, "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
-        http.begin(dataServer, 80, outputString); //HTTP
-        USE_SERIAL.print(outputString);
-        USE_SERIAL.print("[HTTP] GET...\n");
-        // start connection and send HTTP header
-        int httpCode = http.GET();
-        if(httpCode) {
-            // HTTP header has been send and Server response header has been handled
-            USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
-
-            // file found at server
-            if(httpCode == 200) {
-                String payload = http.getString();
-                USE_SERIAL.println(payload);
-            }
+    if(ft != tempPrev){
+    USE_SERIAL.print("\nFT = ");
+    USE_SERIAL.print(ft);
+    USE_SERIAL.print("\ntempPrev = ");
+    USE_SERIAL.print(tempPrev);
+    USE_SERIAL.print("\n");
+    
+      if((WiFiMulti.run() == WL_CONNECTED)) {
+  
+          HTTPClient http;
+  
+          USE_SERIAL.print("[HTTP] begin...\n");
+          // configure traged server and url
+          //http.begin("192.168.1.12", 443, "/test.html", true, "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
+          http.begin(dataServer, 80, outputString); //HTTP
+          USE_SERIAL.print(outputString);
+          USE_SERIAL.print("[HTTP] GET...\n");
+          // start connection and send HTTP header
+          int httpCode = http.GET();
+          if(httpCode) {
+              // HTTP header has been send and Server response header has been handled
+              USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+  
+              // file found at server
+              if(httpCode == 200) {
+                  String payload = http.getString();
+                  USE_SERIAL.println(payload);
+              }
+          } else {
+              USE_SERIAL.print("[HTTP] GET... failed, no connection or no HTTP server\n");
+          }
+      }
         } else {
-            USE_SERIAL.print("[HTTP] GET... failed, no connection or no HTTP server\n");
-        }
+
+    USE_SERIAL.print("Temp the same.  Not posting.\n");
+
+      
     }
 
+  outputString = outputString + deviceName;
+  outputString = outputString + "&sensorName=humSensor&sensorReading=";
+  outputString = outputString + h;
+
+  // wait for WiFi connection
+  if(h != humPrev){  
+    USE_SERIAL.print("\nH = ");
+    USE_SERIAL.print(h);
+    USE_SERIAL.print("\nHumPrev = ");
+    USE_SERIAL.print(humPrev);
+    USE_SERIAL.print("\n");
+      if((WiFiMulti.run() == WL_CONNECTED)) {
   
+          HTTPClient http;
+  
+          USE_SERIAL.print("[HTTP] begin...\n");
+          // configure traged server and url
+          //http.begin("192.168.1.12", 443, "/test.html", true, "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
+          http.begin(dataServer, 80, outputString); //HTTP
+          USE_SERIAL.print(outputString);
+          USE_SERIAL.print("[HTTP] GET...\n");
+          // start connection and send HTTP header
+          int httpCode = http.GET();
+          if(httpCode) {
+              // HTTP header has been send and Server response header has been handled
+              USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+  
+              // file found at server
+              if(httpCode == 200) {
+                  String payload = http.getString();
+                  USE_SERIAL.println(payload);
+              }
+          } else {
+              USE_SERIAL.print("[HTTP] GET... failed, no connection or no HTTP server\n");
+          }
+      }
+    } else {
+
+    USE_SERIAL.print("Humidity the same. Not posting.\n");
+
+      
+    }
+
+  tempPrev = ft;
+  humPrev = h;
     
 delay(60000); // Wait a minute    
+
 }
 
