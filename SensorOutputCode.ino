@@ -24,6 +24,7 @@
 // Note that older versions of this library took an optional third parameter to
 // tweak the timings for faster processors.  This parameter is no longer needed
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
+// if tempPrev + .5 < ft or tempPrev - .5 > ft
 DHT dht(DHTPIN, DHTTYPE);
 
   String dataServer = "10.0.100.100";
@@ -67,7 +68,7 @@ void setup() {
         delay(1000);
     }
 
-    WiFiMulti.addAP("FoS", "JoshpickteethfinE");
+    WiFiMulti.addAP("", "");
 
 }
 
@@ -90,8 +91,9 @@ delay(5000); // Wait 5 seconds
   outputString = outputString + "&sensorName=tempSensor&sensorReading=";
   outputString = outputString + ft;
 
+// if tempPrev + .25 < ft or tempPrev - .25 > ft
   // wait for WiFi connection
-    if(ft != tempPrev){
+    if((tempPrev + .25) < ft || (tempPrev - .25) > ft){
     USE_SERIAL.print("\nFT = ");
     USE_SERIAL.print(ft);
     USE_SERIAL.print("\ntempPrev = ");
@@ -123,6 +125,7 @@ delay(5000); // Wait 5 seconds
               USE_SERIAL.print("[HTTP] GET... failed, no connection or no HTTP server\n");
           }
       }
+      tempPrev = ft;
         } else {
 
     USE_SERIAL.print("Temp the same.  Not posting.\n");
@@ -135,7 +138,7 @@ delay(5000); // Wait 5 seconds
   outputString = outputString + h;
 
   // wait for WiFi connection
-  if(h != humPrev){  
+  if((humPrev + .5) < h || (humPrev - .5) > h){  
     USE_SERIAL.print("\nH = ");
     USE_SERIAL.print(h);
     USE_SERIAL.print("\nHumPrev = ");
@@ -166,6 +169,7 @@ delay(5000); // Wait 5 seconds
               USE_SERIAL.print("[HTTP] GET... failed, no connection or no HTTP server\n");
           }
       }
+    humPrev = h;
     } else {
 
     USE_SERIAL.print("Humidity the same. Not posting.\n");
@@ -173,10 +177,10 @@ delay(5000); // Wait 5 seconds
       
     }
 
-  tempPrev = ft;
+
   humPrev = h;
     
-delay(60000); // Wait a minute    
+delay(2000); // Wait a minute    
 
 }
 
