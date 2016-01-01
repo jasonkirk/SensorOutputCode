@@ -31,6 +31,7 @@ DHT dht(DHTPIN, DHTTYPE);
   String deviceName = "GarageSensorUnit";  
   float tempPrev;
   float humPrev;
+  int loopTo300 = 0;
 
 
 
@@ -75,7 +76,7 @@ void setup() {
 void loop() {
 
 delay(5000); // Wait 5 seconds   
-
+loopTo300 = loopTo300 + 1;
   
   
   float h = dht.readHumidity();
@@ -93,7 +94,7 @@ delay(5000); // Wait 5 seconds
 
 // if tempPrev + .25 < ft or tempPrev - .25 > ft
   // wait for WiFi connection
-    if((tempPrev + .25) < ft || (tempPrev - .25) > ft){
+    if((tempPrev + .25) < ft || (tempPrev - .25) > ft || loopTo300 > 300){
     USE_SERIAL.print("\nFT = ");
     USE_SERIAL.print(ft);
     USE_SERIAL.print("\ntempPrev = ");
@@ -126,9 +127,13 @@ delay(5000); // Wait 5 seconds
           }
       }
       tempPrev = ft;
-        } else {
+      } else {
 
-    USE_SERIAL.print("Temp the same.  Not posting.\n");
+    USE_SERIAL.print("Previous temp: ");
+    USE_SERIAL.print(tempPrev);
+    USE_SERIAL.print(". Currenty temp: ");
+    USE_SERIAL.print(ft);
+    USE_SERIAL.print(".  Difference not enough.  Not posting.\n");
 
       
     }
@@ -138,7 +143,7 @@ delay(5000); // Wait 5 seconds
   outputString = outputString + h;
 
   // wait for WiFi connection
-  if((humPrev + .5) < h || (humPrev - .5) > h){  
+  if((humPrev + .5) < h || (humPrev - .5) > h || loopTo300 > 300){  
     USE_SERIAL.print("\nH = ");
     USE_SERIAL.print(h);
     USE_SERIAL.print("\nHumPrev = ");
@@ -170,17 +175,25 @@ delay(5000); // Wait 5 seconds
           }
       }
     humPrev = h;
+    loopTo300 = 0;
     } else {
 
-    USE_SERIAL.print("Humidity the same. Not posting.\n");
+    USE_SERIAL.print("Previous humidity: ");
+    USE_SERIAL.print(humPrev);
+    USE_SERIAL.print(". Currenty humidity: ");
+    USE_SERIAL.print(h);
+    USE_SERIAL.print(".  Difference not enough.  Not posting.\n");
+
 
       
     }
+USE_SERIAL.print("\n Loop number: ");
+USE_SERIAL.print(loopTo300);
+USE_SERIAL.print("\n\n");
 
-
-  humPrev = h;
     
-delay(2000); // Wait a minute    
+delay(2000); // Wait a minute  
+//600000  / 2000 = 300
 
 }
 
