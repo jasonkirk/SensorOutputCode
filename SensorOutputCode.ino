@@ -69,14 +69,14 @@ void setup() {
         delay(1000);
     }
 
-    WiFiMulti.addAP("", "");
+    WiFiMulti.addAP("FoS", "");
 
 }
 
 void loop() {
 
 delay(5000); // Wait 5 seconds   
-loopTo300 = loopTo300 + 1;
+
   
   
   float h = dht.readHumidity();
@@ -131,9 +131,9 @@ loopTo300 = loopTo300 + 1;
 
     USE_SERIAL.print("Previous temp: ");
     USE_SERIAL.print(tempPrev);
-    USE_SERIAL.print(". Currenty temp: ");
+    USE_SERIAL.print(".\t\t Current temp: ");
     USE_SERIAL.print(ft);
-    USE_SERIAL.print(".  Difference not enough.  Not posting.\n");
+    USE_SERIAL.print(".  Difference not enough.\tNot posting.\n");
 
       
     }
@@ -180,13 +180,14 @@ loopTo300 = loopTo300 + 1;
 
     USE_SERIAL.print("Previous humidity: ");
     USE_SERIAL.print(humPrev);
-    USE_SERIAL.print(". Currenty humidity: ");
+    USE_SERIAL.print(".\t Current humidity: ");
     USE_SERIAL.print(h);
-    USE_SERIAL.print(".  Difference not enough.  Not posting.\n");
+    USE_SERIAL.print(".  Difference not enough.\tNot posting.\n");
 
 
       
     }
+loopTo300 = loopTo300 + 1;
 USE_SERIAL.print("\n Loop number: ");
 USE_SERIAL.print(loopTo300);
 USE_SERIAL.print("\n\n");
