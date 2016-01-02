@@ -27,50 +27,43 @@
 // if tempPrev + .5 < ft or tempPrev - .5 > ft
 DHT dht(DHTPIN, DHTTYPE);
 
-  String dataServer = "10.0.100.100";
-  String deviceName = "GarageSensorUnit";  
-  float tempPrev;
-  float humPrev;
-  int loopTo300 = 0;
-  float humRange = 1;
-  float tempRange = .25;
+String dataServer = "10.0.100.100";
+String deviceName = "GarageSensorUnit";  
 
 
-
+  
+float tempPrev;
+float humPrev;
+int loopTo300 = 0;
+float humRange = 1;
+float tempRange = .25;
 
 #include <Arduino.h>
-
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
-
 #include <ESP8266HTTPClient.h>
-
 #define USE_SERIAL Serial
-
 ESP8266WiFiMulti WiFiMulti;
 
-void setup() {
-  
+
+
+void setup() {  
   dht.begin();
-
-
+  USE_SERIAL.begin(115200);
+  // USE_SERIAL.setDebugOutput(true);
+  USE_SERIAL.println();
+  USE_SERIAL.println();
+  USE_SERIAL.println();
   
-    USE_SERIAL.begin(115200);
-   // USE_SERIAL.setDebugOutput(true);
-
-    USE_SERIAL.println();
-    USE_SERIAL.println();
-    USE_SERIAL.println();
-
-    for(uint8_t t = 4; t > 0; t--) {
-        USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
-        USE_SERIAL.flush();
-        delay(1000);
-    }
-
-    WiFiMulti.addAP("", "");
-
+  for(uint8_t t = 4; t > 0; t--) {
+    USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
+    USE_SERIAL.flush();
+    delay(1000);
+  }
+  WiFiMulti.addAP("JRK_IoT", "eupXI5lWR0sv");
 }
+
+
 
 void loop() {
 
