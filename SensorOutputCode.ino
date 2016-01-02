@@ -32,6 +32,8 @@ DHT dht(DHTPIN, DHTTYPE);
   float tempPrev;
   float humPrev;
   int loopTo300 = 0;
+  float humRange = 1;
+  float tempRange = .25;
 
 
 
@@ -48,9 +50,6 @@ DHT dht(DHTPIN, DHTTYPE);
 ESP8266WiFiMulti WiFiMulti;
 
 void setup() {
-
-  String dataServer = "10.0.100.100";
-  String deviceName = "GarageSensorUnit"; 
   
   dht.begin();
 
@@ -69,7 +68,7 @@ void setup() {
         delay(1000);
     }
 
-    WiFiMulti.addAP("FoS", "");
+    WiFiMulti.addAP("", "");
 
 }
 
@@ -94,7 +93,7 @@ delay(5000); // Wait 5 seconds
 
 // if tempPrev + .25 < ft or tempPrev - .25 > ft
   // wait for WiFi connection
-    if((tempPrev + .25) < ft || (tempPrev - .25) > ft || loopTo300 > 300){
+    if((tempPrev + tempRange) < ft || (tempPrev - tempRange) > ft || loopTo300 > 300){
     USE_SERIAL.print("\nFT = ");
     USE_SERIAL.print(ft);
     USE_SERIAL.print("\ntempPrev = ");
@@ -143,7 +142,7 @@ delay(5000); // Wait 5 seconds
   outputString = outputString + h;
 
   // wait for WiFi connection
-  if((humPrev + .75) < h || (humPrev - .75) > h || loopTo300 > 300){  
+  if((humPrev + humRange) < h || (humPrev - humRange) > h || loopTo300 > 300){  
     USE_SERIAL.print("\nH = ");
     USE_SERIAL.print(h);
     USE_SERIAL.print("\nHumPrev = ");
