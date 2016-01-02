@@ -133,7 +133,7 @@ delay(5000); // Wait 5 seconds
     USE_SERIAL.print(tempPrev);
     USE_SERIAL.print(".\t\t Current temp: ");
     USE_SERIAL.print(ft);
-    USE_SERIAL.print(".  Difference not enough.\tNot posting.\n");
+    USE_SERIAL.print(".\t  Difference not enough.\tNot posting.\n");
 
       
     }
@@ -143,7 +143,7 @@ delay(5000); // Wait 5 seconds
   outputString = outputString + h;
 
   // wait for WiFi connection
-  if((humPrev + .5) < h || (humPrev - .5) > h || loopTo300 > 300){  
+  if((humPrev + .75) < h || (humPrev - .75) > h || loopTo300 > 300){  
     USE_SERIAL.print("\nH = ");
     USE_SERIAL.print(h);
     USE_SERIAL.print("\nHumPrev = ");
